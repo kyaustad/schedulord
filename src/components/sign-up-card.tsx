@@ -11,34 +11,39 @@ import {
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { loginFormSchema, LoginFormSchema } from "@/types/login-signup-form";
-import { addPersistentToast } from "@/lib/persistent-toast";
-import { authClient } from "@/lib/auth-client";
+import { signUpFormSchema, SignUpFormSchema } from "@/types/login-signup-form";
 import { toast } from "sonner";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
+
 export default function LoginCard() {
-  const form = useForm<LoginFormSchema>({
-    resolver: zodResolver(loginFormSchema),
+  const router = useRouter();
+  const form = useForm<SignUpFormSchema>({
+    resolver: zodResolver(signUpFormSchema),
     defaultValues: {
       email: "",
       password: "",
+      confirmPassword: "",
+      name: "",
     },
   });
 
-  const onSubmit = async (data: LoginFormSchema) => {
+  const onSubmit = async (data: SignUpFormSchema) => {
     try {
-      const { data: loginData, error } = await authClient.signIn.email({
+      const { data: signUpData, error } = await authClient.signUp.email({
         email: data.email,
         password: data.password,
-        callbackURL: "/dashboard",
+        name: data.name,
       });
 
-      if (!loginData) {
+      if (!signUpData) {
         toast.error("Invalid credentials");
         return;
       }
 
-      addPersistentToast(`Welcome back, ${loginData.user.name}!`, "success");
+      toast.success(`Welcome ${signUpData.user.name}!`);
       // You can handle successful login here, e.g., redirect or update state
+      router.push("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       toast.error("An error occurred during login");
@@ -48,7 +53,7 @@ export default function LoginCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Login</CardTitle>
+        <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -85,8 +90,44 @@ export default function LoginCard() {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="confirmPassword"
+              defaultValue=""
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Confirm Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Confirm your password"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="name"
+              defaultValue=""
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter your name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <Button type="submit" className="w-full">
-              Login
+              Sign Up
             </Button>
           </form>
         </Form>
