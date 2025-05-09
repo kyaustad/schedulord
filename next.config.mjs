@@ -10,6 +10,13 @@ const nextConfig = {
       "@": "./src",
     },
   },
+  images: {
+    remotePatterns: [{ hostname: "**" }],
+  },
+  productionBrowserSourceMaps: false,
+  experimental: {
+    serverSourceMaps: false,
+  },
 };
 
 export default nextConfig;

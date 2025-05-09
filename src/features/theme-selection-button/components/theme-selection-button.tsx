@@ -9,7 +9,13 @@ import {
 } from "@/components/ui/popover";
 import useSystemTheme from "@/hooks/use-system-theme";
 
-export default function ThemeSelectionButton() {
+interface ThemeSelectionButtonProps {
+  position?: "absolute" | "relative";
+}
+
+export default function ThemeSelectionButton({
+  position = "absolute",
+}: ThemeSelectionButtonProps) {
   const { theme, setTheme } = useSystemTheme();
 
   return (
@@ -18,7 +24,9 @@ export default function ThemeSelectionButton() {
         <Button
           variant="outline"
           size="icon"
-          className="absolute right-4 top-4 aspect-square"
+          className={`${
+            position === "absolute" ? "absolute right-4 top-4" : ""
+          } aspect-square`}
         >
           {theme === "dark" ? (
             <Moon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />

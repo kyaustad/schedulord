@@ -1,19 +1,17 @@
 "use client";
 
-import { SignOutButton } from "@/components/client/sign-out-button";
 import { authClient } from "@/lib/auth-client";
-
+import { PageContainer } from "@/components/containers/page-container";
+import { SimpleCalendar } from "@/features/calendar/components/simple-calendar";
 export default function Dashboard() {
   const { data, isPending, error } = authClient.useSession();
   console.log("data", data);
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <h1>Admin</h1>
-      <p>Welcome, {data?.user?.name}</p>
-      <p>TOKEN: {data?.session?.token}</p>
-      <p>ROLE: {data?.user?.role}</p>
-      <SignOutButton />
-    </div>
+    <PageContainer>
+      <div className="flex flex-col gap-4 h-full w-full">
+        <h1 className="text-2xl font-bold mt-4">Dashboard</h1>
+        <SimpleCalendar className="h-full w-full" />
+      </div>
+    </PageContainer>
   );
 }

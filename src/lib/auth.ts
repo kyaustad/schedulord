@@ -25,6 +25,31 @@ export const auth = betterAuth({
         input: false,
         required: false,
       },
+      first_name: {
+        type: "string",
+        required: true,
+        input: true,
+      },
+      last_name: {
+        type: "string",
+        required: true,
+        input: true,
+      },
+      companyId: {
+        type: "number",
+        required: false,
+        input: true,
+      },
+      locationId: {
+        type: "number",
+        required: false,
+        input: true,
+      },
+      teamId: {
+        type: "number",
+        required: false,
+        input: true,
+      },
     },
   },
 });

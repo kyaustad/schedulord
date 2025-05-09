@@ -6,7 +6,9 @@ import SignUpCard from "@/components/sign-up-card";
 import { checkIfNoUsers } from "@/lib/check-if-no-users";
 import { useState, useEffect } from "react";
 import { authClient } from "@/lib/auth-client";
-
+import { PageContainer } from "@/components/containers/page-container";
+import ThemeSelectionButton from "@/features/theme-selection-button/components/theme-selection-button";
+import { env } from "@/env/env";
 export default function Home() {
   const [noUsers, setNoUsers] = useState(false);
   const [data, setData] = useState<any>(null);
@@ -28,19 +30,18 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px]  justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <div className="text-center flex flex-col items-center">
-          <Image
-            src="/logo_v1.png"
-            alt="logo"
-            className="rounded-xl"
-            width={300}
-            height={300}
-          />
-          {noUsers ? <SignUpCard /> : <LoginCard />}
-        </div>
-      </main>
+    <div className="flex flex-col justify-items-center place-items-center min-w-screen min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+      <ThemeSelectionButton />
+      <div className="text-center gap-4 flex flex-col items-center place-items-center w-full">
+        <Image
+          src={env.NEXT_PUBLIC_APP_ICON_URL}
+          alt="logo"
+          className="rounded-xl"
+          width={300}
+          height={300}
+        />
+        {noUsers ? <SignUpCard /> : <LoginCard />}
+      </div>
     </div>
   );
 }

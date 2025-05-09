@@ -4,8 +4,12 @@ import { ThemeProvider } from "next-themes";
 import { type ReactNode, useEffect } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { showPersistentToasts } from "@/lib/persistent-toast";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 export default function Providers({ children }: { children: ReactNode }) {
+  const queryClient = new QueryClient();
+
   useEffect(() => {
     showPersistentToasts();
   }, []);
@@ -18,10 +22,10 @@ export default function Providers({ children }: { children: ReactNode }) {
       disableTransitionOnChange
       storageKey="theme"
     >
-      <div className="min-h-screen bg-background text-foreground transition-colors duration-[1000ms]">
-        {children}
-      </div>
-      <Toaster />
+      <QueryClientProvider client={queryClient}>
+        <SidebarProvider>{children}</SidebarProvider>
+        <Toaster />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

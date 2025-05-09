@@ -24,7 +24,8 @@ export default function LoginCard() {
       email: "",
       password: "",
       confirmPassword: "",
-      name: "",
+      first_name: "",
+      last_name: "",
     },
   });
 
@@ -33,7 +34,9 @@ export default function LoginCard() {
       const { data: signUpData, error } = await authClient.signUp.email({
         email: data.email,
         password: data.password,
-        name: data.name,
+        first_name: data.first_name,
+        last_name: data.last_name,
+        name: `${data.first_name} ${data.last_name}`,
       });
 
       if (!signUpData) {
@@ -41,8 +44,7 @@ export default function LoginCard() {
         return;
       }
 
-      toast.success(`Welcome ${signUpData.user.name}!`);
-      // You can handle successful login here, e.g., redirect or update state
+      toast.success(`Welcome ${data.first_name}!`);
       router.push("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
@@ -53,7 +55,9 @@ export default function LoginCard() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Sign Up</CardTitle>
+        <CardTitle className="text-2xl font-bold">
+          Create Admin Account
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -110,15 +114,33 @@ export default function LoginCard() {
             />
             <FormField
               control={form.control}
-              name="name"
+              name="first_name"
               defaultValue=""
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>First Name</FormLabel>
                   <FormControl>
                     <Input
                       type="text"
-                      placeholder="Enter your name"
+                      placeholder="Enter your first name"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="last_name"
+              defaultValue=""
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Last Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      placeholder="Enter your last name"
                       {...field}
                     />
                   </FormControl>
@@ -127,7 +149,7 @@ export default function LoginCard() {
               )}
             />
             <Button type="submit" className="w-full">
-              Sign Up
+              Create Account
             </Button>
           </form>
         </Form>

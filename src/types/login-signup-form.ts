@@ -15,8 +15,11 @@ export const signUpFormSchema = z.object({
   confirmPassword: z.string().min(8, {
     message: "Password must be at least 8 characters long",
   }),
-  name: z.string().min(1, {
-    message: "Name is required",
+  first_name: z.string().min(1, {
+    message: "First name is required",
+  }),
+  last_name: z.string().min(1, {
+    message: "Last name is required",
   }),
 });
 export type LoginFormSchema = z.infer<typeof loginFormSchema>;

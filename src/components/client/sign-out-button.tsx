@@ -10,5 +10,9 @@ export function SignOutButton() {
     await authClient.signOut({});
     router.refresh();
   };
-  return <Button onClick={handleSignOut}>Sign Out</Button>;
+  return (
+    <Button className="w-full" onClick={handleSignOut}>
+      Sign Out
+    </Button>
+  );
 }
