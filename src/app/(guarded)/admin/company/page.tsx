@@ -10,7 +10,6 @@ import { useCompanyData } from "@/hooks/use-company-data";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { toast } from "sonner";
 import { CompanyPrefsForm } from "@/features/company-creation/components/company-prefs-form";
 export default function Company() {
   const {
@@ -109,6 +108,8 @@ export default function Company() {
               locationName={finalCompanyData?.preferences?.names?.location}
               teamName={finalCompanyData?.preferences?.names?.team}
               userName={finalCompanyData?.preferences?.names?.user}
+              userId={sessionData.user.id}
+              companyId={sessionData.user.companyId ?? -1}
             />
           </CardContent>
         </Card>

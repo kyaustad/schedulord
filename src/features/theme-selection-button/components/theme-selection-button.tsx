@@ -22,7 +22,7 @@ export default function ThemeSelectionButton({
     <Popover>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="secondary"
           size="icon"
           className={`${
             position === "absolute" ? "absolute right-4 top-4" : ""

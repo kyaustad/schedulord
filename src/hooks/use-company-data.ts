@@ -46,6 +46,10 @@ export const useCompanyData = (userId: string, scope: string) => {
     },
     enabled: !!userId,
     staleTime: 600000, // 10 minutes
+    gcTime: 3600000, // 1 hour
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   return {

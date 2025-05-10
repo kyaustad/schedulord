@@ -14,7 +14,24 @@ import ThemeSelectionButton from "@/features/theme-selection-button/components/t
 import { NavUser } from "./nav-user";
 import Image from "next/image";
 import { env } from "@/env/env";
+import { useCompanyData } from "@/hooks/use-company-data";
+import { authClient } from "@/lib/auth-client";
 export const AppSidebar = () => {
+  const {
+    data: sessionData,
+    isPending: isSessionPending,
+    error: sessionError,
+    refetch: refetchSession,
+  } = authClient.useSession();
+  const {
+    companyData,
+    error: companyError,
+    isLoading: isCompanyLoading,
+    refetch: refetchCompany,
+  } = useCompanyData(
+    sessionData?.user?.id ?? "",
+    sessionData?.user?.role ?? "user"
+  );
   const navAdmin = [
     {
       title: "Dashboard",
@@ -33,11 +50,11 @@ export const AppSidebar = () => {
           url: "/admin/company",
         },
         {
-          title: "Locations",
+          title: companyData?.preferences?.names?.location ?? "Locations",
           url: "/admin/locations",
         },
         {
-          title: "Teams",
+          title: companyData?.preferences?.names?.team ?? "Teams",
           url: "/admin/teams",
         },
         {
