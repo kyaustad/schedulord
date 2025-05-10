@@ -45,7 +45,7 @@ export const useCompanyData = (userId: string, scope: string) => {
       }
     },
     enabled: !!userId,
-    staleTime: 60 * 1000,
+    staleTime: 600000, // 10 minutes
   });
 
   return {

@@ -7,10 +7,12 @@ import { useEffect, useState } from "react";
 import type { Company } from "@/types/company";
 import { Spinner } from "@/components/ui/spinner";
 import { useCompanyData } from "@/hooks/use-company-data";
-import { useRouter } from "next/navigation";
 
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { toast } from "sonner";
+import { CompanyPrefsForm } from "@/features/company-creation/components/company-prefs-form";
 export default function Company() {
-  const router = useRouter();
   const {
     data: sessionData,
     isPending: isSessionPending,
@@ -29,9 +31,10 @@ export default function Company() {
   const [finalCompanyData, setFinalCompanyData] = useState<Company | null>(
     companyData
   );
+
   useEffect(() => {
     setFinalCompanyData(companyData);
-  }, [companyData, sessionData]);
+  }, [companyData]);
 
   if (isSessionPending || isCompanyLoading) {
     return (
@@ -92,16 +95,34 @@ export default function Company() {
     refetchCompany();
   };
 
+  const renderCompanyPage = () => {
+    return (
+      <div className="flex h-full w-full gap-4">
+        <Card className="min-w-md">
+          <CardHeader>
+            <CardTitle className="text-2xl font-bold">
+              {finalCompanyData?.name}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <CompanyPrefsForm
+              locationName={finalCompanyData?.preferences?.names?.location}
+              teamName={finalCompanyData?.preferences?.names?.team}
+              userName={finalCompanyData?.preferences?.names?.user}
+            />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  };
+
   return (
     <PageContainer>
-      <div className="flex flex-col gap-4 h-full w-full">
-        <h1 className="text-2xl font-bold mt-4">Company Settings</h1>
-        <div className="flex flex-row gap-4">
+      <h1 className="text-2xl font-bold">Company Settings</h1>
+      <div className="flex flex-col gap-4 items-center h-full w-full">
+        <div className="flex items-center flex-row gap-4">
           {sessionData.user.companyId ? (
-            <div>
-              <h2>Company Name</h2>
-              <p>{finalCompanyData?.name ?? "No company name available"}</p>
-            </div>
+            renderCompanyPage()
           ) : (
             <CompanyCreationDialog
               onSave={handleCompanySave}

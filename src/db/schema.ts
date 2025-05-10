@@ -8,6 +8,7 @@ import {
   pgEnum,
   integer,
   serial,
+  jsonb,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
@@ -18,6 +19,7 @@ export const company = pgTable("company", {
   name: text().notNull(),
   createdAt: timestamp({ mode: "string" }).notNull(),
   updatedAt: timestamp({ mode: "string" }).notNull(),
+  preferences: jsonb().default({}),
 });
 
 export const location = pgTable(

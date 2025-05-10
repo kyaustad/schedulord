@@ -4,6 +4,16 @@ import { company, user, location, team } from "@/db/schema";
 import { eq, and, inArray } from "drizzle-orm";
 import type { Company } from "@/types/company";
 
+// Define the type for preferences to ensure type safety
+type CompanyPreferences = {
+  names: {
+    location: string;
+    team: string;
+    user?: string;
+    manager?: string;
+  };
+};
+
 export async function POST(request: NextRequest) {
   try {
     const { userId, scope } = await request.json();
@@ -37,7 +47,14 @@ export async function POST(request: NextRequest) {
       const companyData = await db.query.company.findFirst({
         where: eq(company.id, userRecord.companyId),
       });
-      userCompany = companyData || null;
+      userCompany = companyData
+        ? {
+            ...companyData,
+            preferences: companyData.preferences as
+              | CompanyPreferences
+              | undefined,
+          }
+        : null;
     } else if (scope === "manager") {
       // For managers, get their specific location and its teams
       const [companyData, locationData] = await Promise.all([
@@ -56,6 +73,9 @@ export async function POST(request: NextRequest) {
 
         userCompany = {
           ...companyData,
+          preferences: companyData.preferences as
+            | CompanyPreferences
+            | undefined,
           locations: [
             {
               ...locationData,
@@ -94,13 +114,23 @@ export async function POST(request: NextRequest) {
 
         userCompany = {
           ...companyData,
+          preferences: companyData.preferences as
+            | CompanyPreferences
+            | undefined,
           locations: locations.map((loc) => ({
             ...loc,
             teams: teamsByLocation[loc.id] || [],
           })),
         };
       } else {
-        userCompany = companyData || null;
+        userCompany = companyData
+          ? {
+              ...companyData,
+              preferences: companyData.preferences as
+                | CompanyPreferences
+                | undefined,
+            }
+          : null;
       }
     }
 

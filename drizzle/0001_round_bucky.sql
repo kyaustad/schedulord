@@ -1,0 +1,1 @@
+ALTER TABLE "company" ADD COLUMN "preferences" jsonb DEFAULT '{}'::jsonb;

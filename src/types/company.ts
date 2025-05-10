@@ -8,4 +8,12 @@ export type Company = {
   updatedAt: Date | string;
   locations?: Location[];
   teams?: Team[];
+  preferences?: {
+    names: {
+      location: string;
+      team: string;
+      user?: string;
+      manager?: string;
+    };
+  };
 };
