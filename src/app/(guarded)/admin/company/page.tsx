@@ -110,6 +110,7 @@ export default function Company() {
               userName={finalCompanyData?.preferences?.names?.user}
               userId={sessionData.user.id}
               companyId={sessionData.user.companyId ?? -1}
+              onSave={refetchCompany}
             />
           </CardContent>
         </Card>

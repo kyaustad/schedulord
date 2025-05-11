@@ -16,7 +16,7 @@ type CompanyPreferences = {
 
 export async function POST(request: NextRequest) {
   try {
-    const { userId, scope } = await request.json();
+    const { userId, role } = await request.json();
 
     if (!userId) {
       return NextResponse.json(
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     let userCompany: Company | null = null;
-    if (scope === "user") {
+    if (role === "user") {
       const companyData = await db.query.company.findFirst({
         where: eq(company.id, userRecord.companyId),
       });
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
               | undefined,
           }
         : null;
-    } else if (scope === "manager") {
+    } else if (role === "manager") {
       // For managers, get their specific location and its teams
       const [companyData, locationData] = await Promise.all([
         db.query.company.findFirst({
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       } else {
         userCompany = null;
       }
-    } else if (scope === "admin") {
+    } else if (role === "admin") {
       // For admins, get all locations and their teams
       const [companyData, locations] = await Promise.all([
         db.query.company.findFirst({

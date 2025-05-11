@@ -22,6 +22,7 @@ interface CompanyPrefsFormProps {
   userName?: string;
   userId: string;
   companyId: number;
+  onSave: () => void;
 }
 
 export const CompanyPrefsForm = ({
@@ -30,6 +31,7 @@ export const CompanyPrefsForm = ({
   userName = "User",
   userId,
   companyId,
+  onSave,
 }: CompanyPrefsFormProps) => {
   const [location, setLocation] = useState(locationName);
   const [team, setTeam] = useState(teamName);
@@ -51,6 +53,7 @@ export const CompanyPrefsForm = ({
         throw new Error("Failed to save company preferences");
       }
       toast.success("Company preferences saved");
+      onSave();
     } catch (error) {
       toast.error("Failed to save company preferences");
     }

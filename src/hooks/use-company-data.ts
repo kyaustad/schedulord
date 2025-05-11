@@ -11,9 +11,9 @@ type CompanyRequest = {
   scope: string;
 };
 
-export const useCompanyData = (userId: string, scope: string) => {
+export const useCompanyData = (userId: string, role: string) => {
   const { data, error, isLoading, refetch } = useQuery<CompanyResponse>({
-    queryKey: ["companyData", userId, scope],
+    queryKey: ["companyData", userId, role],
     queryFn: async () => {
       try {
         const response = await fetch("/api/company", {
@@ -21,7 +21,7 @@ export const useCompanyData = (userId: string, scope: string) => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ userId, scope }),
+          body: JSON.stringify({ userId, role }),
         });
 
         if (!response.ok) {
