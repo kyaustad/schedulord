@@ -15,23 +15,19 @@ import { NavUser } from "./nav-user";
 import Image from "next/image";
 import { env } from "@/env/env";
 import { useCompanyData } from "@/hooks/use-company-data";
-import { authClient } from "@/lib/auth-client";
+import { useSession } from "@/hooks/use-session";
 export const AppSidebar = () => {
   const {
-    data: sessionData,
-    isPending: isSessionPending,
+    session,
+    isLoading: isSessionLoading,
     error: sessionError,
-    refetch: refetchSession,
-  } = authClient.useSession();
+  } = useSession();
   const {
     companyData,
     error: companyError,
     isLoading: isCompanyLoading,
     refetch: refetchCompany,
-  } = useCompanyData(
-    sessionData?.user?.id ?? "",
-    sessionData?.user?.role ?? "user"
-  );
+  } = useCompanyData(session?.user?.id ?? "", session?.user?.role ?? "user");
   const navAdmin = [
     {
       title: "Dashboard",

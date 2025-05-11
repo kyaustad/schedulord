@@ -26,8 +26,9 @@ import {
 import { authClient } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { SignOutButton } from "@/components/client/sign-out-button";
+import { useSession } from "@/hooks/use-session";
 export function NavUser() {
-  const { data, isPending, error } = authClient.useSession();
+  const { session, isLoading, error } = useSession();
 
   return (
     <SidebarMenu>
@@ -40,21 +41,21 @@ export function NavUser() {
             >
               <Avatar className="h-8 w-8 rounded-full">
                 <AvatarImage
-                  src={`${data?.user?.image}`}
-                  alt={`${data?.user?.first_name} ${data?.user?.last_name}`}
+                  src={`${session?.user?.image}`}
+                  alt={`${session?.user?.first_name} ${session?.user?.last_name}`}
                 />
                 <AvatarFallback className="rounded-full">
-                  {data?.user?.first_name && data?.user?.last_name
-                    ? data?.user?.first_name.charAt(0) +
-                      data?.user?.last_name.charAt(0)
+                  {session?.user?.first_name && session?.user?.last_name
+                    ? session?.user?.first_name.charAt(0) +
+                      session?.user?.last_name.charAt(0)
                     : ""}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {data?.user?.first_name} {data?.user?.last_name}
+                  {session?.user?.first_name} {session?.user?.last_name}
                 </span>
-                <span className="truncate text-xs">{data?.user?.email}</span>
+                <span className="truncate text-xs">{session?.user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -68,21 +69,23 @@ export function NavUser() {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={data?.user?.image ?? undefined}
-                    alt={`${data?.user?.first_name} ${data?.user?.last_name}`}
+                    src={session?.user?.image ?? undefined}
+                    alt={`${session?.user?.first_name} ${session?.user?.last_name}`}
                   />
                   <AvatarFallback className="rounded-lg">
-                    {data?.user?.first_name && data?.user?.last_name
-                      ? data?.user?.first_name.charAt(0) +
-                        data?.user?.last_name.charAt(0)
+                    {session?.user?.first_name && session?.user?.last_name
+                      ? session?.user?.first_name.charAt(0) +
+                        session?.user?.last_name.charAt(0)
                       : ""}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {data?.user?.first_name} {data?.user?.last_name}
+                    {session?.user?.first_name} {session?.user?.last_name}
                   </span>
-                  <span className="truncate text-xs">{data?.user?.email}</span>
+                  <span className="truncate text-xs">
+                    {session?.user?.email}
+                  </span>
                 </div>
               </div>
             </DropdownMenuLabel>

@@ -7,7 +7,7 @@ type SessionResponse = Awaited<
 
 export const useSession = () => {
   const { data, error, isLoading } = useQuery<SessionResponse>({
-    queryKey: ["session"],
+    queryKey: ["session", "sessionData"],
     queryFn: async () => {
       try {
         const response = await authClient.getSession();
@@ -26,7 +26,11 @@ export const useSession = () => {
       }
     },
     enabled: true,
-    staleTime: 60 * 1000,
+    staleTime: 600000, // 10 minutes
+    gcTime: 3600000, // 1 hour
+    refetchOnWindowFocus: false,
+    refetchOnMount: false,
+    refetchOnReconnect: false,
   });
 
   return {

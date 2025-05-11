@@ -11,13 +11,14 @@ import { useCompanyData } from "@/hooks/use-company-data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { CompanyPrefsForm } from "@/features/company-creation/components/company-prefs-form";
+import { useSession } from "@/hooks/use-session";
+
 export default function Company() {
   const {
-    data: sessionData,
-    isPending: isSessionPending,
+    session: sessionData,
+    isLoading: isSessionLoading,
     error: sessionError,
-    refetch: refetchSession,
-  } = authClient.useSession();
+  } = useSession();
   const {
     companyData,
     error: companyError,
@@ -35,7 +36,7 @@ export default function Company() {
     setFinalCompanyData(companyData);
   }, [companyData]);
 
-  if (isSessionPending || isCompanyLoading) {
+  if (isSessionLoading || isCompanyLoading) {
     return (
       <PageContainer>
         <div className="flex items-center justify-center h-full">
@@ -90,7 +91,6 @@ export default function Company() {
   }
 
   const handleCompanySave = () => {
-    refetchSession();
     refetchCompany();
   };
 

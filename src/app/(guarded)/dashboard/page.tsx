@@ -5,18 +5,19 @@ import { authClient } from "@/lib/auth-client";
 import { Spinner } from "@/components/ui/spinner";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useSession } from "@/hooks/use-session";
 export default function Dashboard() {
-  const { data, isPending, error } = authClient.useSession();
-  console.log("data", data);
+  const { session, isLoading, error } = useSession();
+  console.log("data", session);
   const router = useRouter();
   useEffect(() => {
-    if (isPending) return; // Don't navigate while loading
-    if (!data?.user?.role) {
+    if (isLoading) return; // Don't navigate while loading
+    if (!session?.user?.role) {
       router.push("/");
       return;
     }
 
-    const role = data.user.role;
+    const role = session?.user?.role;
     if (role === "admin") {
       router.push("/dashboard/admin");
     } else if (role === "manager") {
@@ -26,7 +27,7 @@ export default function Dashboard() {
     } else {
       router.push("/"); // Fallback for invalid roles
     }
-  }, [data, isPending, router]);
+  }, [session, isLoading, router]);
   return (
     <div className="flex flex-col items-center justify-center h-screen w-screen">
       <div className="flex flex-row items-center align-middle justify-between gap-4">

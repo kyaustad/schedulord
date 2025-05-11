@@ -3,9 +3,10 @@
 import { authClient } from "@/lib/auth-client";
 import { PageContainer } from "@/components/containers/page-container";
 import { SimpleCalendar } from "@/features/calendar/components/simple-calendar";
+import { useSession } from "@/hooks/use-session";
 export default function Dashboard() {
-  const { data, isPending, error } = authClient.useSession();
-  console.log("data", data);
+  const { session, isLoading, error } = useSession();
+  console.log("data", session);
   return (
     <PageContainer>
       <div className="flex flex-col gap-4 h-full w-full">

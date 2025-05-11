@@ -9,17 +9,19 @@ import { authClient } from "@/lib/auth-client";
 import { PageContainer } from "@/components/containers/page-container";
 import ThemeSelectionButton from "@/features/theme-selection-button/components/theme-selection-button";
 import { env } from "@/env/env";
+import { useSession } from "@/hooks/use-session";
+
 export default function Home() {
   const [noUsers, setNoUsers] = useState(false);
   const [data, setData] = useState<any>(null);
+  const { session } = useSession();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await authClient.getSession();
-      setData(data);
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     setData(session);
+  //   };
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     const checkUsers = async () => {
