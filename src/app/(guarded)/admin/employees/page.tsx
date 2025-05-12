@@ -13,6 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CompanyPrefsForm } from "@/features/company-creation/components/company-prefs-form";
 import { useSession } from "@/hooks/use-session";
 import { LocationTable } from "@/features/location-creation/components/location-table";
+import { EmployeeCreationTable } from "@/features/employee-creation/components/employee-creation-table";
 
 export default function Locations() {
   const {
@@ -92,7 +93,7 @@ export default function Locations() {
     );
   }
 
-  const renderLocationsPage = () => {
+  const renderEmployeesPage = () => {
     return (
       <div className="flex h-full w-full gap-4">
         <Card className="md:min-w-lg w-full grow">
@@ -103,11 +104,10 @@ export default function Locations() {
           </CardHeader>
           <CardContent>
             {finalCompanyData && (
-              <LocationTable
-                userId={sessionData.user.id}
+              <EmployeeCreationTable
+                scope="admin"
                 companyData={finalCompanyData}
-                onRefresh={refetchCompany}
-                onCreate={refetchCompany}
+                userId={sessionData.user.id}
               />
             )}
           </CardContent>
@@ -118,18 +118,12 @@ export default function Locations() {
 
   return (
     <PageContainer>
-      <h1 className="text-2xl font-bold">
-        {finalCompanyData?.preferences?.names?.location}
-      </h1>
+      <h1 className="text-2xl font-bold">Employees</h1>
       <div className="flex flex-col gap-4 items-center h-full w-full">
         <div className="flex items-center flex-row gap-4 w-full p-4">
-          {sessionData.user.companyId ? (
-            renderLocationsPage()
-          ) : (
-            <div className="flex items-center justify-center h-full">
-              <p>No company found</p>
-            </div>
-          )}
+          {sessionData.user.companyId &&
+            finalCompanyData &&
+            renderEmployeesPage()}
         </div>
       </div>
     </PageContainer>

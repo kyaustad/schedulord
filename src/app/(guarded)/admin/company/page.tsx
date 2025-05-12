@@ -97,7 +97,7 @@ export default function Company() {
   const renderCompanyPage = () => {
     return (
       <div className="flex h-full w-full gap-4">
-        <Card className="min-w-md">
+        <Card className="md:min-w-md">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">
               {finalCompanyData?.name}

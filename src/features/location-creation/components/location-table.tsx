@@ -134,7 +134,7 @@ export const LocationTable = ({
       </TabsList>
       <TabsContent value="view">
         <div className="flex flex-col gap-4 items-end">
-          <Button variant="default" className="min-w-20" onClick={onRefresh}>
+          <Button variant="default" className="md:min-w-20" onClick={onRefresh}>
             <RefreshCcw className="min-w-5 min-h-5" />
           </Button>
           {renderTableContent()}
@@ -142,7 +142,7 @@ export const LocationTable = ({
       </TabsContent>
       <TabsContent value="create">
         <div className="flex w-full justify-center">
-          <Card className="min-w-md">
+          <Card className="md:min-w-md">
             <CardHeader>
               <CardTitle className="text-2xl font-bold">
                 {`Create a ${singularName}`}

@@ -96,7 +96,7 @@ export default function Locations() {
   const renderTeamsPage = () => {
     return (
       <div className="flex h-full w-full gap-4">
-        <Card className="min-w-lg w-full grow">
+        <Card className="md:min-w-lg w-full grow">
           <CardHeader>
             <CardTitle className="text-2xl font-bold">
               {finalCompanyData?.name}

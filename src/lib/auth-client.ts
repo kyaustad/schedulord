@@ -43,7 +43,7 @@ export const authClient = createAuthClient({
       role: {
         type: "string",
         default: "admin",
-        input: false,
+        input: true,
         required: true,
       },
       companyId: {

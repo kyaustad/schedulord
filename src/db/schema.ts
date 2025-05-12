@@ -88,7 +88,7 @@ export const user = pgTable(
     name: text().notNull(),
     first_name: text().notNull(),
     last_name: text().notNull(),
-    email: text().notNull(),
+    email: text().notNull().unique(),
     emailVerified: boolean().notNull(),
     image: text(),
     role: userRoleEnum("role").default("admin").notNull(),

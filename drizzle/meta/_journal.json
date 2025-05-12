@@ -15,6 +15,13 @@
       "when": 1746835569005,
       "tag": "0001_round_bucky",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1747073336248,
+      "tag": "0002_red_firestar",
+      "breakpoints": true
     }
   ]
 }

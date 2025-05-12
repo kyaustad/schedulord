@@ -170,7 +170,7 @@ export const TeamTable = ({
       </TabsList>
       <TabsContent value="view">
         <div className="flex flex-col gap-4 items-end">
-          <Button variant="default" className="min-w-20" onClick={onRefresh}>
+          <Button variant="default" className="md:min-w-20" onClick={onRefresh}>
             <RefreshCcw className="min-w-5 min-h-5" />
           </Button>
           <div className="flex flex-col items-center gap-1 w-full">
@@ -181,7 +181,7 @@ export const TeamTable = ({
               defaultValue={selectedLocation.toString()}
               onValueChange={(value) => setSelectedLocation(parseInt(value))}
             >
-              <SelectTrigger className="min-w-md">
+              <SelectTrigger className="md:min-w-md">
                 <SelectValue
                   placeholder={`Select a ${removePlural(
                     companyData.preferences?.names?.location || ""
@@ -212,7 +212,7 @@ export const TeamTable = ({
                 setCreateData({ ...createData, locationId: value })
               }
             >
-              <SelectTrigger className="min-w-md">
+              <SelectTrigger className="md:min-w-md">
                 <SelectValue
                   placeholder={`Select a ${removePlural(
                     companyData.preferences?.names?.location || ""
@@ -228,7 +228,7 @@ export const TeamTable = ({
               </SelectContent>
             </Select>
           </div>
-          <Card className="min-w-md">
+          <Card className="md:min-w-md">
             <CardHeader>
               <CardTitle className="text-2xl font-bold">
                 {`Create a ${singularName}`}

@@ -37,6 +37,7 @@ export default function LoginCard() {
         first_name: data.first_name,
         last_name: data.last_name,
         name: `${data.first_name} ${data.last_name}`,
+        role: "admin",
       });
 
       if (!signUpData) {
