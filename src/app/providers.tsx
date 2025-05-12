@@ -45,7 +45,7 @@ export default function Providers({ children }: { children: ReactNode }) {
     >
       <QueryClientProvider client={queryClient}>
         <SidebarProvider>{children}</SidebarProvider>
-        <Toaster />
+        <Toaster richColors />
       </QueryClientProvider>
     </ThemeProvider>
   );

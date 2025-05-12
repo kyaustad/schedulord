@@ -26,7 +26,7 @@ export default function ThemeSelectionButton({
           size="icon"
           className={`${
             position === "absolute" ? "absolute right-4 top-4" : ""
-          } aspect-square text-foreground`}
+          } aspect-square text-background`}
         >
           {theme === "dark" ? (
             <Moon className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />

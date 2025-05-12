@@ -50,6 +50,18 @@ export const LocationTable = ({
 
   const handleCreate = async () => {
     console.log(createData);
+    if (!createData.name || !createData.address) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    if (createData.name.length < 3) {
+      toast.error("Name must be at least 3 characters");
+      return;
+    }
+    if (createData.address.length < 3) {
+      toast.error("Address must be at least 3 characters");
+      return;
+    }
     try {
       const response = await fetch("/api/location/create", {
         method: "POST",
@@ -86,7 +98,9 @@ export const LocationTable = ({
             <TableRow>
               <TableHead>Name</TableHead>
               <TableHead>Address</TableHead>
-              <TableHead># of Teams</TableHead>
+              <TableHead>
+                # of {companyData.preferences?.names?.team ?? ""}
+              </TableHead>
               <TableHead>Actions</TableHead>
             </TableRow>
           </TableHeader>
