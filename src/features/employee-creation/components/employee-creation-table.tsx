@@ -10,7 +10,7 @@ import { Company } from "@/types/company";
 import { Location } from "@/types/location";
 import { removePlural } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import {
@@ -31,6 +31,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useEmployeesData } from "@/hooks/use-employees-data";
+import { Employee } from "@/types/employee";
 
 interface EmployeeCreationTableProps {
   companyData: Company;
@@ -52,9 +53,14 @@ export const EmployeeCreationTable = ({
     scope
   );
   console.log("employees", employees);
+  const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
+
   const [selectedLocation, setSelectedLocation] = useState<number>(-1);
-  const [selectedLocationData, setSelectedLocationData] =
+  const [selectedLocationDataCreate, setSelectedLocationDataCreate] =
     useState<Location | null>(null);
+  const [selectedLocationDataView, setSelectedLocationDataView] =
+    useState<Location | null>(null);
+  // const [selectedTeam, setSelectedTeam] = useState<number>(-1);
   const [createData, setCreateData] = useState<{
     email: string;
     role: "user" | "manager" | "admin";
@@ -74,6 +80,42 @@ export const EmployeeCreationTable = ({
     companyId: "-1",
     password: "",
   });
+
+  useEffect(() => {
+    setFilteredEmployees(employees || []);
+  }, [employees]);
+
+  useEffect(() => {
+    if (selectedLocation === -1) {
+      setFilteredEmployees(employees || []);
+    } else {
+      setFilteredEmployees(
+        employees?.filter(
+          (employee) => employee.locationId === selectedLocation
+        ) || []
+      );
+    }
+  }, [selectedLocation]);
+
+  // useEffect(() => {
+  //   if (selectedTeam === -1) {
+  //     if (selectedLocation !== -1) {
+  //       setFilteredEmployees(
+  //         employees?.filter(
+  //           (employee) => employee.locationId === selectedLocation
+  //         ) || []
+  //       );
+  //     } else {
+  //       setFilteredEmployees(employees || []);
+  //     }
+  //   } else {
+  //     setFilteredEmployees(
+  //       filteredEmployees?.filter(
+  //         (employee) => employee.teamId === selectedTeam
+  //       ) || []
+  //     );
+  //   }
+  // }, [selectedTeam]);
 
   const handleCreate = async () => {
     console.log(createData);
@@ -154,27 +196,37 @@ export const EmployeeCreationTable = ({
       toast.error("Failed to create employee");
     }
   };
-  console.log("selectedLocationData", selectedLocationData);
+
+  const handleLocationFilter = (value: string) => {
+    setSelectedLocation(parseInt(value));
+    // setSelectedTeam(-1);
+    setSelectedLocationDataView(
+      companyData?.locations?.find(
+        (location) => location.id === parseInt(value)
+      ) || null
+    );
+    setFilteredEmployees(
+      employees?.filter(
+        (employee) => employee.locationId === parseInt(value)
+      ) || []
+    );
+  };
+
+  const handleTeamFilter = (value: string) => {
+    setFilteredEmployees(
+      employees?.filter(
+        (employee) =>
+          employee.teamId === parseInt(value) &&
+          employee.locationId === selectedLocation
+      ) || []
+    );
+  };
+
+  console.log("selectedLocationDataCreate", selectedLocationDataCreate);
   console.log("companyData", companyData);
 
   const renderTableContent = () => {
     if (companyData.locations) {
-      const selectedLocationData = companyData.locations.find(
-        (location) => location.id === selectedLocation
-      );
-
-      if (!selectedLocationData) {
-        return (
-          <div className="flex flex-col items-center gap-1 w-full">
-            <p>
-              Please select a{" "}
-              {removePlural(companyData.preferences?.names?.location || "")} to
-              view Employees
-            </p>
-          </div>
-        );
-      }
-
       return (
         <Table>
           <TableHeader>
@@ -194,7 +246,7 @@ export const EmployeeCreationTable = ({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {employees?.map((employee) => (
+            {filteredEmployees?.map((employee) => (
               <TableRow key={employee.id}>
                 <TableCell>{employee.first_name}</TableCell>
                 <TableCell>{employee.last_name}</TableCell>
@@ -202,13 +254,21 @@ export const EmployeeCreationTable = ({
                 <TableCell>{employee.role}</TableCell>
                 <TableCell>
                   {
-                    selectedLocationData.teams?.find(
-                      (team) => team.id === employee.teamId
+                    companyData.locations
+                      ?.filter(
+                        (location) => location.id === employee.locationId
+                      )[0]
+                      ?.teams?.find((team) => team.id === employee.teamId)?.name
+                  }
+                </TableCell>
+                <TableCell>
+                  {
+                    companyData.locations?.find(
+                      (location) => location.id === employee.locationId
                     )?.name
                   }
                 </TableCell>
-                <TableCell>{selectedLocationData.name}</TableCell>
-                <TableCell>{employee.companyId}</TableCell>
+                <TableCell>{companyData.name}</TableCell>
                 <TableCell className="flex gap-2">
                   <Button variant="default">
                     <Pencil className="w-4 h-4" />
@@ -238,12 +298,12 @@ export const EmployeeCreationTable = ({
           </Button>
           <div className="flex flex-col items-center gap-1 w-full">
             <p className="font-bold text-2xl">
-              Select a{" "}
+              Filter by{" "}
               {removePlural(companyData.preferences?.names?.location || "")}
             </p>
             <Select
               defaultValue={selectedLocation.toString()}
-              onValueChange={(value) => setSelectedLocation(parseInt(value))}
+              onValueChange={handleLocationFilter}
             >
               <SelectTrigger className="md:min-w-md">
                 <SelectValue
@@ -253,9 +313,37 @@ export const EmployeeCreationTable = ({
                 />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="-1">All</SelectItem>
                 {companyData.locations?.map((location) => (
                   <SelectItem key={location.id} value={location.id.toString()}>
                     {location.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col items-center gap-1 w-full">
+            <p className="font-bold text-2xl">
+              Filter by{" "}
+              {removePlural(companyData.preferences?.names?.team || "")}
+            </p>
+            <Select
+              disabled={selectedLocation === -1}
+              defaultValue={"-1"}
+              onValueChange={handleTeamFilter}
+            >
+              <SelectTrigger className="md:min-w-md">
+                <SelectValue
+                  placeholder={`Select a ${removePlural(
+                    companyData.preferences?.names?.team || ""
+                  )}`}
+                />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="-1">All</SelectItem>
+                {selectedLocationDataView?.teams?.map((team) => (
+                  <SelectItem key={team.id} value={team.id.toString()}>
+                    {team.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -275,7 +363,7 @@ export const EmployeeCreationTable = ({
               defaultValue={createData.locationId}
               onValueChange={(value) => {
                 setCreateData({ ...createData, locationId: value });
-                setSelectedLocationData(
+                setSelectedLocationDataCreate(
                   companyData.locations?.find(
                     (location) => location.id === parseInt(value)
                   ) || null
@@ -297,7 +385,7 @@ export const EmployeeCreationTable = ({
                 ))}
               </SelectContent>
             </Select>
-            {selectedLocationData && (
+            {selectedLocationDataCreate && (
               <>
                 <p className="font-bold text-2xl">
                   Select a{" "}
@@ -317,7 +405,7 @@ export const EmployeeCreationTable = ({
                     />
                   </SelectTrigger>
                   <SelectContent>
-                    {selectedLocationData?.teams?.map((team) => (
+                    {selectedLocationDataCreate?.teams?.map((team) => (
                       <SelectItem key={team.id} value={team.id.toString()}>
                         {team.name}
                       </SelectItem>
