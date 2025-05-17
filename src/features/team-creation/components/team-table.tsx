@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DeleteButton } from "@/features/delete-entity-button/components/delete-entity-button";
 
 interface TeamTableProps {
   companyData: Company;
@@ -47,6 +48,7 @@ export const TeamTable = ({
 }: TeamTableProps) => {
   const singularName = removePlural(companyData.preferences?.names?.team ?? "");
   const [selectedLocation, setSelectedLocation] = useState<number>(-1);
+  const [createLoading, setCreateLoading] = useState<boolean>(false);
   const [createData, setCreateData] = useState<{
     name: string;
     color: string;
@@ -75,6 +77,7 @@ export const TeamTable = ({
       toast.error("Please select a location");
       return;
     }
+    setCreateLoading(true);
     try {
       const response = await fetch("/api/team/create", {
         method: "POST",
@@ -94,14 +97,16 @@ export const TeamTable = ({
       console.log(data);
       toast.success("Team created successfully");
       setCreateData({
+        ...createData,
         name: "",
         color: "",
-        locationId: "-1",
       });
       onCreate?.();
     } catch (error) {
       console.error(error);
       toast.error("Failed to create team");
+    } finally {
+      setCreateLoading(false);
     }
   };
 
@@ -150,9 +155,13 @@ export const TeamTable = ({
                   <Button variant="default">
                     <Pencil className="w-4 h-4" />
                   </Button>
-                  <Button variant="destructive">
-                    <Trash className="w-4 h-4" />
-                  </Button>
+                  <DeleteButton
+                    entity="team"
+                    id={team.id}
+                    userId={userId}
+                    companyId={companyData.id}
+                    onDelete={onRefresh}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -257,7 +266,9 @@ export const TeamTable = ({
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={handleCreate}>Create</Button>
+              <Button onClick={handleCreate} disabled={createLoading}>
+                {createLoading ? "Creating..." : "Create"}
+              </Button>
             </CardFooter>
           </Card>
         </div>

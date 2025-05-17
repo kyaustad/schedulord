@@ -22,6 +22,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Pencil, RefreshCcw, Trash } from "lucide-react";
+import { DeleteButton } from "@/features/delete-entity-button/components/delete-entity-button";
 
 interface LocationTableProps {
   companyData: Company;
@@ -39,6 +40,7 @@ export const LocationTable = ({
   const singularName = removePlural(
     companyData.preferences?.names?.location ?? ""
   );
+  const [createLoading, setCreateLoading] = useState<boolean>(false);
 
   const [createData, setCreateData] = useState<{
     name: string;
@@ -49,7 +51,7 @@ export const LocationTable = ({
   });
 
   const handleCreate = async () => {
-    console.log(createData);
+    setCreateLoading(true);
     if (!createData.name || !createData.address) {
       toast.error("Please fill in all fields");
       return;
@@ -87,6 +89,8 @@ export const LocationTable = ({
     } catch (error) {
       console.error(error);
       toast.error("Failed to create location");
+    } finally {
+      setCreateLoading(false);
     }
   };
 
@@ -114,9 +118,13 @@ export const LocationTable = ({
                   <Button variant="default">
                     <Pencil className="w-4 h-4" />
                   </Button>
-                  <Button variant="destructive">
-                    <Trash className="w-4 h-4" />
-                  </Button>
+                  <DeleteButton
+                    entity="location"
+                    id={location.id}
+                    userId={userId}
+                    companyId={companyData.id}
+                    onDelete={onRefresh}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -169,7 +177,9 @@ export const LocationTable = ({
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={handleCreate}>Create</Button>
+              <Button onClick={handleCreate} disabled={createLoading}>
+                {createLoading ? "Creating..." : "Create"}
+              </Button>
             </CardFooter>
           </Card>
         </div>

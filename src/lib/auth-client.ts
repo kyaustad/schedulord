@@ -29,6 +29,9 @@ export const authClient = createAuthClient({
   },
   plugins: [inferAdditionalFields<typeof auth>()],
   user: {
+    delete: {
+      enabled: true,
+    },
     additionalFields: {
       first_name: {
         type: "string",

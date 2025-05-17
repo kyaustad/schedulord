@@ -13,6 +13,15 @@ import {
 import { sql } from "drizzle-orm";
 
 export const userRoleEnum = pgEnum("role", ["admin", "user", "manager"]);
+export const weekStartEnum = pgEnum("week_start", [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday",
+]);
 
 export const company = pgTable("company", {
   id: serial("id").primaryKey(),
@@ -20,6 +29,7 @@ export const company = pgTable("company", {
   createdAt: timestamp({ mode: "string" }).notNull(),
   updatedAt: timestamp({ mode: "string" }).notNull(),
   preferences: jsonb().default({}),
+  weekStart: weekStartEnum("week_start").default("monday"),
 });
 
 export const location = pgTable(
@@ -36,7 +46,7 @@ export const location = pgTable(
     foreignKey({
       columns: [table.companyId],
       foreignColumns: [company.id],
-    }),
+    }).onDelete("cascade"),
   ]
 );
 
@@ -54,7 +64,7 @@ export const team = pgTable(
     foreignKey({
       columns: [table.locationId],
       foreignColumns: [location.id],
-    }),
+    }).onDelete("cascade"),
   ]
 );
 
@@ -73,11 +83,11 @@ export const schedule = pgTable(
     foreignKey({
       columns: [table.teamId],
       foreignColumns: [team.id],
-    }),
+    }).onDelete("cascade"),
     foreignKey({
       columns: [table.userId],
       foreignColumns: [user.id],
-    }),
+    }).onDelete("cascade"),
   ]
 );
 
@@ -103,16 +113,16 @@ export const user = pgTable(
     foreignKey({
       columns: [table.companyId],
       foreignColumns: [company.id],
-    }),
+    }).onDelete("set null"),
 
     foreignKey({
       columns: [table.locationId],
       foreignColumns: [location.id],
-    }),
+    }).onDelete("set null"),
     foreignKey({
       columns: [table.teamId],
       foreignColumns: [team.id],
-    }),
+    }).onDelete("set null"),
   ]
 );
 
@@ -133,7 +143,7 @@ export const session = pgTable(
       columns: [table.userId],
       foreignColumns: [user.id],
       name: "session_userId_fkey",
-    }),
+    }).onDelete("cascade"),
     unique("session_token_key").on(table.token),
   ]
 );
@@ -160,7 +170,7 @@ export const account = pgTable(
       columns: [table.userId],
       foreignColumns: [user.id],
       name: "account_userId_fkey",
-    }),
+    }).onDelete("cascade"),
   ]
 );
 

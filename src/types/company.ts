@@ -14,4 +14,12 @@ export type Company = {
       manager?: string;
     };
   };
+  weekStart:
+    | "monday"
+    | "tuesday"
+    | "wednesday"
+    | "thursday"
+    | "friday"
+    | "saturday"
+    | "sunday";
 };

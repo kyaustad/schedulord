@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { useEmployeesData } from "@/hooks/use-employees-data";
 import { Employee } from "@/types/employee";
+import { DeleteButton } from "@/features/delete-entity-button/components/delete-entity-button";
 
 interface EmployeeCreationTableProps {
   companyData: Company;
@@ -54,7 +55,7 @@ export const EmployeeCreationTable = ({
   );
   console.log("employees", employees);
   const [filteredEmployees, setFilteredEmployees] = useState<Employee[]>([]);
-
+  const [createLoading, setCreateLoading] = useState<boolean>(false);
   const [selectedLocation, setSelectedLocation] = useState<number>(-1);
   const [selectedLocationDataCreate, setSelectedLocationDataCreate] =
     useState<Location | null>(null);
@@ -97,28 +98,8 @@ export const EmployeeCreationTable = ({
     }
   }, [selectedLocation]);
 
-  // useEffect(() => {
-  //   if (selectedTeam === -1) {
-  //     if (selectedLocation !== -1) {
-  //       setFilteredEmployees(
-  //         employees?.filter(
-  //           (employee) => employee.locationId === selectedLocation
-  //         ) || []
-  //       );
-  //     } else {
-  //       setFilteredEmployees(employees || []);
-  //     }
-  //   } else {
-  //     setFilteredEmployees(
-  //       filteredEmployees?.filter(
-  //         (employee) => employee.teamId === selectedTeam
-  //       ) || []
-  //     );
-  //   }
-  // }, [selectedTeam]);
-
   const handleCreate = async () => {
-    console.log(createData);
+    setCreateLoading(true);
     if (
       !createData.email ||
       !createData.role ||
@@ -194,6 +175,8 @@ export const EmployeeCreationTable = ({
     } catch (error) {
       console.error(error);
       toast.error("Failed to create employee");
+    } finally {
+      setCreateLoading(false);
     }
   };
 
@@ -226,63 +209,72 @@ export const EmployeeCreationTable = ({
   console.log("companyData", companyData);
 
   const renderTableContent = () => {
-    if (companyData.locations) {
-      return (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>First Name</TableHead>
-              <TableHead>Last Name</TableHead>
-              <TableHead>Email</TableHead>
-              <TableHead>Role</TableHead>
-              <TableHead>
-                {removePlural(companyData?.preferences?.names?.team || "")}
-              </TableHead>
-              <TableHead>
-                {removePlural(companyData?.preferences?.names?.location || "")}
-              </TableHead>
-              <TableHead>Company</TableHead>
-              <TableHead>Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredEmployees?.map((employee) => (
-              <TableRow key={employee.id}>
-                <TableCell>{employee.first_name}</TableCell>
-                <TableCell>{employee.last_name}</TableCell>
-                <TableCell>{employee.email}</TableCell>
-                <TableCell>{employee.role}</TableCell>
-                <TableCell>
-                  {
-                    companyData.locations
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>First Name</TableHead>
+            <TableHead>Last Name</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Role</TableHead>
+            {companyData.locations && (
+              <>
+                <TableHead>
+                  {removePlural(companyData?.preferences?.names?.team || "")}
+                </TableHead>
+                <TableHead>
+                  {removePlural(
+                    companyData?.preferences?.names?.location || ""
+                  )}
+                </TableHead>
+              </>
+            )}
+            <TableHead>Company</TableHead>
+            <TableHead>Actions</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredEmployees?.map((employee) => (
+            <TableRow key={employee.id}>
+              <TableCell>{employee.first_name}</TableCell>
+              <TableCell>{employee.last_name}</TableCell>
+              <TableCell>{employee.email}</TableCell>
+              <TableCell>{employee.role}</TableCell>
+              {companyData.locations && (
+                <>
+                  <TableCell>
+                    {companyData.locations
                       ?.filter(
                         (location) => location.id === employee.locationId
                       )[0]
-                      ?.teams?.find((team) => team.id === employee.teamId)?.name
-                  }
-                </TableCell>
-                <TableCell>
-                  {
-                    companyData.locations?.find(
+                      ?.teams?.find((team) => team.id === employee.teamId)
+                      ?.name || "-"}
+                  </TableCell>
+                  <TableCell>
+                    {companyData.locations?.find(
                       (location) => location.id === employee.locationId
-                    )?.name
-                  }
-                </TableCell>
-                <TableCell>{companyData.name}</TableCell>
-                <TableCell className="flex gap-2">
-                  <Button variant="default">
-                    <Pencil className="w-4 h-4" />
-                  </Button>
-                  <Button variant="destructive">
-                    <Trash className="w-4 h-4" />
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      );
-    }
+                    )?.name || "-"}
+                  </TableCell>
+                </>
+              )}
+              <TableCell>{companyData.name}</TableCell>
+              <TableCell className="flex gap-2">
+                <Button variant="default">
+                  <Pencil className="w-4 h-4" />
+                </Button>
+                <DeleteButton
+                  entity="employee"
+                  id={employee.id}
+                  userId={userId}
+                  companyId={companyData.id}
+                  onDelete={refetch}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    );
   };
 
   return (
@@ -293,7 +285,13 @@ export const EmployeeCreationTable = ({
       </TabsList>
       <TabsContent value="view">
         <div className="flex flex-col gap-4 items-end">
-          <Button variant="default" className="md:min-w-20" onClick={onRefresh}>
+          <Button
+            variant="default"
+            className="md:min-w-20"
+            onClick={() => {
+              refetch();
+            }}
+          >
             <RefreshCcw className="min-w-5 min-h-5" />
           </Button>
           <div className="flex flex-col items-center gap-1 w-full">
@@ -483,7 +481,9 @@ export const EmployeeCreationTable = ({
               </div>
             </CardContent>
             <CardFooter>
-              <Button onClick={handleCreate}>Create</Button>
+              <Button onClick={handleCreate} disabled={createLoading}>
+                {createLoading ? "Creating..." : "Create"}
+              </Button>
             </CardFooter>
           </Card>
         </div>

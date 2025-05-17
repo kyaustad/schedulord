@@ -36,13 +36,13 @@ export const AppSidebar = () => {
       isActive: true,
     },
     {
-      title: "Company",
+      title: "Admin Settings",
       url: "/admin/company",
       icon: Building2,
       isActive: false,
       items: [
         {
-          title: "Company Settings",
+          title: "Company",
           url: "/admin/company",
         },
         {
