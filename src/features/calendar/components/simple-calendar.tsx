@@ -261,9 +261,9 @@ export const SimpleCalendar = ({
         className="flex flex-col h-full"
       >
         <TabsList>
-          <TabsTrigger value="day">Day</TabsTrigger>
-          <TabsTrigger value="week">Week</TabsTrigger>
           <TabsTrigger value="month">Month</TabsTrigger>
+          <TabsTrigger value="week">Week</TabsTrigger>
+          <TabsTrigger value="day">Day</TabsTrigger>
         </TabsList>
         <TabsContent value="day" className="flex-1 mt-4">
           {renderDayView()}
