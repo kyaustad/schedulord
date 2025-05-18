@@ -1,0 +1,1 @@
+ALTER TABLE "location" ADD COLUMN "hoursQuota" integer DEFAULT 0;

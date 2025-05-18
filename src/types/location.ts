@@ -8,4 +8,5 @@ export type Location = {
   address: string;
   companyId: number;
   teams?: Team[];
+  hoursQuota: number;
 };

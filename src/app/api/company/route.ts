@@ -63,6 +63,7 @@ export async function POST(request: NextRequest) {
             preferences: companyData.preferences as
               | CompanyPreferences
               | undefined,
+
             weekStart: companyData.weekStart as
               | "monday"
               | "tuesday"
@@ -98,6 +99,7 @@ export async function POST(request: NextRequest) {
             {
               ...locationData,
               teams,
+              hoursQuota: locationData.hoursQuota ?? 0,
             },
           ],
           weekStart: companyData.weekStart as
@@ -154,6 +156,7 @@ export async function POST(request: NextRequest) {
           locations: locations.map((loc) => ({
             ...loc,
             teams: teamsByLocation[loc.id] || [],
+            hoursQuota: loc.hoursQuota ?? 0,
           })),
         };
       } else {

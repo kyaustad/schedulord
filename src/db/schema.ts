@@ -51,6 +51,7 @@ export const location = pgTable(
       .$onUpdate(() => new Date().toISOString()),
     address: text().notNull(),
     companyId: integer().notNull(),
+    hoursQuota: integer().default(0),
   },
   (table) => [
     foreignKey({
