@@ -16,6 +16,8 @@ import Image from "next/image";
 import { env } from "@/env/env";
 import { useCompanyData } from "@/hooks/use-company-data";
 import { useSession } from "@/hooks/use-session";
+import { removePlural } from "@/lib/utils";
+
 export const AppSidebar = () => {
   const {
     session,
@@ -61,6 +63,36 @@ export const AppSidebar = () => {
       ],
     },
   ];
+  const navManager = [
+    {
+      title: "Dashboard",
+      url: "/dashboard/manager",
+      icon: House,
+      isActive: true,
+    },
+    {
+      title: "Manager Settings",
+      url: "/manager/settings",
+      icon: Building2,
+      isActive: false,
+      items: [
+        {
+          title: removePlural(
+            companyData?.preferences?.names?.location ?? "Location"
+          ),
+          url: "/manager/locations",
+        },
+        {
+          title: companyData?.preferences?.names?.team ?? "Teams",
+          url: "/admin/teams",
+        },
+        {
+          title: "Employees",
+          url: "/admin/employees",
+        },
+      ],
+    },
+  ];
 
   return (
     <Sidebar>
@@ -77,7 +109,8 @@ export const AppSidebar = () => {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={navAdmin} />
+        {session?.user?.role === "admin" && <NavMain items={navAdmin} />}
+        {session?.user?.role === "manager" && <NavMain items={navManager} />}
       </SidebarContent>
       <SidebarFooter>
         <div className="w-full flex justify-end">

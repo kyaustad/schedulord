@@ -63,6 +63,14 @@ export async function POST(request: NextRequest) {
             preferences: companyData.preferences as
               | CompanyPreferences
               | undefined,
+            weekStart: companyData.weekStart as
+              | "monday"
+              | "tuesday"
+              | "wednesday"
+              | "thursday"
+              | "friday"
+              | "saturday"
+              | "sunday",
           }
         : null;
     } else if (role === "manager") {
@@ -92,6 +100,14 @@ export async function POST(request: NextRequest) {
               teams,
             },
           ],
+          weekStart: companyData.weekStart as
+            | "monday"
+            | "tuesday"
+            | "wednesday"
+            | "thursday"
+            | "friday"
+            | "saturday"
+            | "sunday",
         };
       } else {
         userCompany = null;
@@ -127,6 +143,14 @@ export async function POST(request: NextRequest) {
           preferences: companyData.preferences as
             | CompanyPreferences
             | undefined,
+          weekStart: companyData.weekStart as
+            | "monday"
+            | "tuesday"
+            | "wednesday"
+            | "thursday"
+            | "friday"
+            | "saturday"
+            | "sunday",
           locations: locations.map((loc) => ({
             ...loc,
             teams: teamsByLocation[loc.id] || [],
@@ -139,6 +163,14 @@ export async function POST(request: NextRequest) {
               preferences: companyData.preferences as
                 | CompanyPreferences
                 | undefined,
+              weekStart: companyData.weekStart as
+                | "monday"
+                | "tuesday"
+                | "wednesday"
+                | "thursday"
+                | "friday"
+                | "saturday"
+                | "sunday",
             }
           : null;
       }

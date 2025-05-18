@@ -1,20 +1,33 @@
 "use client";
 
-import { SignOutButton } from "@/components/client/sign-out-button";
+import { PageContainer } from "@/components/containers/page-container";
+import { LoadingSpinner } from "@/components/loading-spinner";
+import { SimpleCalendar } from "@/features/calendar/components/simple-calendar";
+import { useCompanyData } from "@/hooks/use-company-data";
 import { useSession } from "@/hooks/use-session";
-import { authClient } from "@/lib/auth-client";
-
 export default function Dashboard() {
   const { session, isLoading, error } = useSession();
+  const {
+    companyData,
+    error: companyError,
+    isLoading: isCompanyLoading,
+    refetch: refetchCompany,
+  } = useCompanyData(session?.user?.id ?? "", session?.user?.role ?? "user");
+
   console.log("data", session);
   return (
-    <div>
-      <h1>Dashboard</h1>
-      <h1>Manager</h1>
-      <p>Welcome, {session?.user?.name}</p>
-      <p>TOKEN: {session?.session?.token}</p>
-      <p>ROLE: {session?.user?.role}</p>
-      <SignOutButton />
-    </div>
+    <PageContainer>
+      <div className="flex flex-col gap-4 h-full w-full">
+        <h1 className="text-2xl font-bold mt-4">Dashboard</h1>
+        {isCompanyLoading ? (
+          <LoadingSpinner />
+        ) : (
+          <SimpleCalendar
+            className="h-full w-full"
+            companyWeekStart={companyData?.weekStart}
+          />
+        )}
+      </div>
+    </PageContainer>
   );
 }

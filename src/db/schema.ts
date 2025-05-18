@@ -26,8 +26,13 @@ export const weekStartEnum = pgEnum("week_start", [
 export const company = pgTable("company", {
   id: serial("id").primaryKey(),
   name: text().notNull(),
-  createdAt: timestamp({ mode: "string" }).notNull(),
-  updatedAt: timestamp({ mode: "string" }).notNull(),
+  createdAt: timestamp("createdAt", {
+    withTimezone: true,
+    mode: "string",
+  }).notNull(),
+  updatedAt: timestamp("updatedAt", { withTimezone: true, mode: "string" })
+    .notNull()
+    .$onUpdate(() => new Date().toISOString()),
   preferences: jsonb().default({}),
   weekStart: weekStartEnum("week_start").default("monday"),
 });
@@ -37,8 +42,13 @@ export const location = pgTable(
   {
     id: serial("id").primaryKey(),
     name: text().notNull(),
-    createdAt: timestamp({ mode: "string" }).notNull(),
-    updatedAt: timestamp({ mode: "string" }).notNull(),
+    createdAt: timestamp("createdAt", {
+      withTimezone: true,
+      mode: "string",
+    }).notNull(),
+    updatedAt: timestamp("updatedAt", { withTimezone: true, mode: "string" })
+      .notNull()
+      .$onUpdate(() => new Date().toISOString()),
     address: text().notNull(),
     companyId: integer().notNull(),
   },
@@ -55,8 +65,13 @@ export const team = pgTable(
   {
     id: serial("id").primaryKey(),
     name: text().notNull(),
-    createdAt: timestamp({ mode: "string" }).notNull(),
-    updatedAt: timestamp({ mode: "string" }).notNull(),
+    createdAt: timestamp("createdAt", {
+      withTimezone: true,
+      mode: "string",
+    }).notNull(),
+    updatedAt: timestamp("updatedAt", { withTimezone: true, mode: "string" })
+      .notNull()
+      .$onUpdate(() => new Date().toISOString()),
     color: text().notNull(),
     locationId: integer().notNull(),
   },
@@ -72,12 +87,17 @@ export const schedule = pgTable(
   "schedule",
   {
     id: serial("id").primaryKey(),
-    createdAt: timestamp({ mode: "string" }).notNull(),
-    updatedAt: timestamp({ mode: "string" }).notNull(),
+    createdAt: timestamp("createdAt", {
+      withTimezone: true,
+      mode: "string",
+    }).notNull(),
+    updatedAt: timestamp("updatedAt", { withTimezone: true, mode: "string" })
+      .notNull()
+      .$onUpdate(() => new Date().toISOString()),
     teamId: integer().notNull(),
     userId: text().notNull(),
-    start: timestamp({ mode: "string" }).notNull(),
-    end: timestamp({ mode: "string" }).notNull(),
+    start: timestamp("start", { withTimezone: true, mode: "string" }).notNull(),
+    end: timestamp("end", { withTimezone: true, mode: "string" }).notNull(),
   },
   (table) => [
     foreignKey({
@@ -102,8 +122,13 @@ export const user = pgTable(
     emailVerified: boolean().notNull(),
     image: text(),
     role: userRoleEnum("role").default("admin").notNull(),
-    createdAt: timestamp({ mode: "string" }).notNull(),
-    updatedAt: timestamp({ mode: "string" }).notNull(),
+    createdAt: timestamp("createdAt", {
+      withTimezone: true,
+      mode: "string",
+    }).notNull(),
+    updatedAt: timestamp("updatedAt", { withTimezone: true, mode: "string" })
+      .notNull()
+      .$onUpdate(() => new Date().toISOString()),
     companyId: integer(),
     locationId: integer(),
     teamId: integer(),
