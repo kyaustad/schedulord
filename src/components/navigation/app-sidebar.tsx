@@ -28,6 +28,7 @@ export const AppSidebar = () => {
     isLoading: isCompanyLoading,
     refetch: refetchCompany,
   } = useCompanyData(session?.user?.id ?? "", session?.user?.role ?? "user");
+
   const navAdmin = [
     {
       title: "Dashboard",
@@ -58,12 +59,6 @@ export const AppSidebar = () => {
           url: "/admin/employees",
         },
       ],
-    },
-    {
-      title: "Schedule",
-      url: "/admin/schedule",
-      icon: CalendarDays,
-      isActive: false,
     },
   ];
 

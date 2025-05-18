@@ -16,7 +16,9 @@ import { toast } from "sonner";
 import {
   Table,
   TableBody,
+  TableCaption,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -106,39 +108,46 @@ export const EmployeeCreationTable = ({
       !createData.first_name ||
       !createData.last_name ||
       !createData.locationId ||
-      !createData.teamId ||
       !createData.companyId ||
       !createData.password
     ) {
       toast.error("Please fill in all fields");
+      setCreateLoading(false);
       return;
     }
     if (createData.email.length < 3) {
       toast.error("Email must be at least 3 characters");
+      setCreateLoading(false);
       return;
     }
     if (createData.role.length < 4) {
       toast.error("Role must be at least 4 characters");
+      setCreateLoading(false);
       return;
     }
     if (createData.password.length < 8) {
       toast.error("Password must be at least 8 characters");
+      setCreateLoading(false);
       return;
     }
     if (createData.first_name.length < 3) {
       toast.error("First name must be at least 3 characters");
+      setCreateLoading(false);
       return;
     }
     if (createData.last_name.length < 3) {
       toast.error("Last name must be at least 3 characters");
+      setCreateLoading(false);
       return;
     }
-    if (createData.teamId === "-1") {
+    if (createData.teamId === "-1" && createData.role === "user") {
       toast.error("Please select a team");
+      setCreateLoading(false);
       return;
     }
     if (createData.locationId === "-1") {
       toast.error("Please select a location");
+      setCreateLoading(false);
       return;
     }
     try {
@@ -150,7 +159,12 @@ export const EmployeeCreationTable = ({
           first_name: createData.first_name,
           last_name: createData.last_name,
           locationId: createData.locationId,
-          teamId: createData.teamId,
+          teamId:
+            createData.teamId === "-1" ||
+            createData.role === "manager" ||
+            createData.role === "admin"
+              ? "-1"
+              : createData.teamId,
           companyId: companyData.id,
           password: createData.password,
           userId: userId,
@@ -172,6 +186,8 @@ export const EmployeeCreationTable = ({
       });
 
       onCreate?.();
+
+      await refetch();
     } catch (error) {
       console.error(error);
       toast.error("Failed to create employee");
@@ -196,13 +212,22 @@ export const EmployeeCreationTable = ({
   };
 
   const handleTeamFilter = (value: string) => {
-    setFilteredEmployees(
-      employees?.filter(
-        (employee) =>
-          employee.teamId === parseInt(value) &&
-          employee.locationId === selectedLocation
-      ) || []
-    );
+    console.log("value", value);
+    if (value === "-1") {
+      setFilteredEmployees(
+        employees?.filter(
+          (employee) => employee.locationId === selectedLocation
+        ) || []
+      );
+    } else {
+      setFilteredEmployees(
+        employees?.filter(
+          (employee) =>
+            employee.teamId === parseInt(value) &&
+            employee.locationId === selectedLocation
+        ) || []
+      );
+    }
   };
 
   console.log("selectedLocationDataCreate", selectedLocationDataCreate);
@@ -273,6 +298,10 @@ export const EmployeeCreationTable = ({
             </TableRow>
           ))}
         </TableBody>
+
+        <TableCaption className="w-full">
+          {`Showing ${filteredEmployees.length} out of ${employees?.length}`}
+        </TableCaption>
       </Table>
     );
   };
@@ -383,7 +412,38 @@ export const EmployeeCreationTable = ({
                 ))}
               </SelectContent>
             </Select>
-            {selectedLocationDataCreate && (
+            <p className="font-bold text-2xl">Select a Role</p>
+            <Select
+              defaultValue={createData.role}
+              onValueChange={(value) => {
+                if (value === "user") {
+                  setCreateData({
+                    ...createData,
+                    teamId: "-1",
+                    role: value as "user" | "manager" | "admin",
+                  });
+                } else {
+                  setCreateData({
+                    ...createData,
+                    role: value as "user" | "manager" | "admin",
+                  });
+                }
+              }}
+            >
+              <SelectTrigger className="md:min-w-md">
+                <SelectValue placeholder={`Select a Role`} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="user">Employee</SelectItem>
+                {scope === "admin" && (
+                  <>
+                    <SelectItem value="manager">Manager</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </>
+                )}
+              </SelectContent>
+            </Select>
+            {selectedLocationDataCreate && createData.role === "user" && (
               <>
                 <p className="font-bold text-2xl">
                   Select a{" "}
@@ -455,29 +515,6 @@ export const EmployeeCreationTable = ({
                     setCreateData({ ...createData, password: e.target.value });
                   }}
                 />
-                <p className="font-bold">Role</p>
-                <Select
-                  defaultValue={"user"}
-                  onValueChange={(value) => {
-                    setCreateData({
-                      ...createData,
-                      role: value as "user" | "manager" | "admin",
-                    });
-                  }}
-                >
-                  <SelectTrigger className="md:min-w-md">
-                    <SelectValue placeholder={`Select a Role`} />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="user">Employee</SelectItem>
-                    {scope === "admin" && (
-                      <>
-                        <SelectItem value="manager">Manager</SelectItem>
-                        <SelectItem value="admin">Admin</SelectItem>
-                      </>
-                    )}
-                  </SelectContent>
-                </Select>
               </div>
             </CardContent>
             <CardFooter>

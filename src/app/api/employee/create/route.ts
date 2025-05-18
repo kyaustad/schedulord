@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
       name: `${first_name} ${last_name}`,
       companyId: companyId,
       locationId: locationId,
-      teamId: teamId,
+      teamId: teamId === "-1" ? null : teamId,
       role: role,
     });
 
