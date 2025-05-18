@@ -36,8 +36,10 @@ export const CompanyPrefsForm = ({
   const [location, setLocation] = useState(locationName);
   const [team, setTeam] = useState(teamName);
   const [user, setUser] = useState(userName);
+  const [saveLoading, setSaveLoading] = useState(false);
   console.log("userId", userId);
   const handleSave = async () => {
+    setSaveLoading(true);
     try {
       const response = await fetch("/api/company/preferences/update", {
         method: "POST",
@@ -56,6 +58,8 @@ export const CompanyPrefsForm = ({
       onSave();
     } catch (error) {
       toast.error("Failed to save company preferences");
+    } finally {
+      setSaveLoading(false);
     }
   };
 
@@ -125,7 +129,9 @@ export const CompanyPrefsForm = ({
         </SelectContent>
       </Select>
       <div className="flex flex-row w-full justify-end">
-        <Button onClick={handleSave}>Save</Button>
+        <Button onClick={handleSave} disabled={saveLoading}>
+          {saveLoading ? "Saving..." : "Save"}
+        </Button>
       </div>
     </div>
   );

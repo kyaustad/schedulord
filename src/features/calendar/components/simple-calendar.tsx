@@ -28,12 +28,31 @@ interface SimpleCalendarProps {
   schedules?: Schedule[];
   onDateSelect?: (date: Date) => void;
   className?: string;
+  companyWeekStart?:
+    | "monday"
+    | "sunday"
+    | "saturday"
+    | "friday"
+    | "thursday"
+    | "wednesday"
+    | "tuesday";
 }
+
+const weekStartMap = {
+  sunday: 0,
+  monday: 1,
+  tuesday: 2,
+  wednesday: 3,
+  thursday: 4,
+  friday: 5,
+  saturday: 6,
+} as const;
 
 export const SimpleCalendar = ({
   schedules = [],
   onDateSelect,
   className,
+  companyWeekStart = "monday",
 }: SimpleCalendarProps) => {
   const [date, setDate] = React.useState<Date>(new Date());
   const [view, setView] = React.useState<"day" | "week" | "month">("month");
@@ -74,8 +93,12 @@ export const SimpleCalendar = ({
   };
 
   const renderWeekView = () => {
-    const weekStart = startOfWeek(date);
-    const weekEnd = endOfWeek(date);
+    const weekStart = startOfWeek(date, {
+      weekStartsOn: weekStartMap[companyWeekStart],
+    });
+    const weekEnd = endOfWeek(date, {
+      weekStartsOn: weekStartMap[companyWeekStart],
+    });
     const days = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
     return (
@@ -91,7 +114,10 @@ export const SimpleCalendar = ({
                 isSameDay(day, date) ? "bg-primary/10" : ""
               }`}
             >
-              <div className="font-medium mb-2">{format(day, "EEE")}</div>
+              <div className="font-medium mb-2">
+                {format(day, "EEE")}
+                {"."} {format(day, "MMM d")}
+              </div>
               <div className="text-sm space-y-1">
                 {schedules
                   .filter((schedule) =>
@@ -126,10 +152,21 @@ export const SimpleCalendar = ({
   const renderMonthView = () => {
     const monthStart = startOfMonth(date);
     const monthEnd = endOfMonth(date);
-    const startDate = startOfWeek(monthStart);
-    const endDate = endOfWeek(monthEnd);
+    const startDate = startOfWeek(monthStart, {
+      weekStartsOn: weekStartMap[companyWeekStart],
+    });
+    const endDate = endOfWeek(monthEnd, {
+      weekStartsOn: weekStartMap[companyWeekStart],
+    });
     const days = eachDayOfInterval({ start: startDate, end: endDate });
+
+    // Create week days array based on company week start
     const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const weekStartIndex = weekStartMap[companyWeekStart];
+    const reorderedWeekDays = [
+      ...weekDays.slice(weekStartIndex),
+      ...weekDays.slice(0, weekStartIndex),
+    ];
 
     return (
       <Card className="p-4 h-full w-full flex flex-col">
@@ -154,7 +191,7 @@ export const SimpleCalendar = ({
         </div>
 
         <div className="grid grid-cols-7 gap-1 flex-1">
-          {weekDays.map((day) => (
+          {reorderedWeekDays.map((day) => (
             <div
               key={day}
               className="text-center font-medium text-muted-foreground py-2"

@@ -13,17 +13,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CompanyPrefsForm } from "@/features/company-creation/components/company-prefs-form";
 import { useSession } from "@/hooks/use-session";
 import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
-import { SelectContent } from "@/components/ui/select";
-import { SelectItem, SelectValue } from "@/components/ui/select";
-import { SelectTrigger } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-} from "@/components/ui/popover";
-import { InfoIcon } from "lucide-react";
-import { Select } from "@/components/ui/select";
+import { CompanyWeekStart } from "@/features/company-creation/components/company-week-start";
 
 export default function Company() {
   const {
@@ -135,36 +125,12 @@ export default function Company() {
                 />
               </TabsContent>
               <TabsContent value="week-start">
-                <div className="flex flex-row items-center align-middle text-center gap-2">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button variant="ghost" size="icon">
-                        <InfoIcon />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <p>
-                        This is the day of the week your company's work week
-                        starts on.
-                      </p>
-                    </PopoverContent>
-                  </Popover>
-                  <p className="text-lg font-bold">Week Start</p>
-                </div>
-                <Select value={weekStart} onValueChange={setWeekStart}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="monday">Monday</SelectItem>
-                    <SelectItem value="tuesday">Tuesday</SelectItem>
-                    <SelectItem value="wednesday">Wednesday</SelectItem>
-                    <SelectItem value="thursday">Thursday</SelectItem>
-                    <SelectItem value="friday">Friday</SelectItem>
-                    <SelectItem value="saturday">Saturday</SelectItem>
-                    <SelectItem value="sunday">Sunday</SelectItem>
-                  </SelectContent>
-                </Select>
+                <CompanyWeekStart
+                  companyId={finalCompanyData?.id ?? -1}
+                  userId={sessionData.user.id}
+                  onSave={refetchCompany}
+                  companyWeekStart={finalCompanyData?.weekStart ?? "monday"}
+                />
               </TabsContent>
             </Tabs>
           </CardContent>
