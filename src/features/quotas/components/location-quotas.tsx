@@ -38,12 +38,11 @@ export const LocationQuotas = () => {
     if (location) {
       setHoursQuota(location.hoursQuota);
     }
-  }, [location]);
+  }, [location, companyData]);
 
   if (isCompanyLoading || isLoading) {
     return <LoadingSpinner />;
   }
-
   const handleSave = async () => {
     setIsSaving(true);
     try {
@@ -99,7 +98,7 @@ export const LocationQuotas = () => {
             </div>
             <Input
               type="number"
-              defaultValue={hoursQuota}
+              value={hoursQuota}
               onChange={(e) => setHoursQuota(Number(e.target.value))}
             />
             <div className="flex flex-row justify-end w-full text-center gap-2 mt-2">
