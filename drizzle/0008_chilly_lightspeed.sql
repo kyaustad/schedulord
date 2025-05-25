@@ -1,2 +1,0 @@
-CREATE TYPE "public"."week_start" AS ENUM('monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday');--> statement-breakpoint
-ALTER TABLE "company" ADD COLUMN "week_start" "week_start" DEFAULT 'monday';

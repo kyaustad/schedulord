@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS "public"."schedule" CASCADE;
+DROP TABLE IF EXISTS "public"."team" CASCADE;
+DROP TABLE IF EXISTS "public"."location" CASCADE;
+DROP TABLE IF EXISTS "public"."company" CASCADE;
+DROP TABLE IF EXISTS "public"."user" CASCADE;
+DROP TABLE IF EXISTS "public"."account" CASCADE;
+DROP TABLE IF EXISTS "public"."session" CASCADE;
+DROP TABLE IF EXISTS "public"."verification" CASCADE;
+DROP TYPE IF EXISTS "public"."role";
+DROP TYPE IF EXISTS "public"."week_start";
